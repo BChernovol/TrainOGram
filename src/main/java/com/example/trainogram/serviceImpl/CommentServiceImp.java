@@ -5,6 +5,7 @@ import com.example.trainogram.entity.Comment;
 import com.example.trainogram.entity.Post;
 import com.example.trainogram.exception.Status420CommentPostIdNotFoundException;
 import com.example.trainogram.exception.Status427UserHasNotRootException;
+import com.example.trainogram.exception.Status439TextIsEmptyException;
 import com.example.trainogram.repositories.CommentRepository;
 import com.example.trainogram.repositories.PostRepository;
 import com.example.trainogram.services.CommentService;
@@ -25,7 +26,6 @@ public class CommentServiceImp implements CommentService {
     private final UserService userService;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-
     private final NotificationService notificationService;
 
 
@@ -39,20 +39,20 @@ public class CommentServiceImp implements CommentService {
 
 
     @Override
-    public Comment createComment(Long postId, CommentDTO commentDTO, String token) throws Status420CommentPostIdNotFoundException {
+    public Comment createComment(Long postId, CommentDTO commentDTO, String token) throws Status420CommentPostIdNotFoundException, Status439TextIsEmptyException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new Status420CommentPostIdNotFoundException("Post with id " + postId));
-        Comment comment = Comment.builder()
+        if(!userService.getAuthenticatedUser(token).get().getId().equals(post.getUser().getId())){
+            notificationService.createNotification("new comment to post ", post.getUser(),token);
+        }
+       if(commentDTO.getText() == null || commentDTO.getText().isEmpty()){
+            throw new Status439TextIsEmptyException("Text can not be empty");
+       }
+         return  commentRepository.save( Comment.builder()
                 .createDate(new Date())
                 .text(commentDTO.getText())
                 .post(post)
                 .author(userService.getAuthenticatedUser(token).get())
-                .build();
-        commentRepository.save(comment);
-        if(!userService.getAuthenticatedUser(token).get().getId().equals(post.getUser().getId())){
-            notificationService.createNotification("new comment to post ", post.getUser(),token);
-        }
-
-        return comment;
+                .build());
     }
 
     @Override

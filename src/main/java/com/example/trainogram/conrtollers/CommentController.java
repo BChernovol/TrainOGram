@@ -27,7 +27,7 @@ public class CommentController {
 
     @PostMapping("/create/{id}")
     public ResponseEntity<HttpStatus> create(@PathVariable Long id,
-                                             @RequestBody CommentDTO commentDTO, @RequestHeader("Authorization") String token) throws Status420CommentPostIdNotFoundException {
+                                             @RequestBody CommentDTO commentDTO, @RequestHeader("Authorization") String token) throws Status420CommentPostIdNotFoundException, Status439TextIsEmptyException {
         commentService.createComment(id, commentDTO, token);
         return ResponseEntity.ok(HttpStatus.OK);
     }
