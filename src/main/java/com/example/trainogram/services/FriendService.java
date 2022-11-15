@@ -1,12 +1,10 @@
 package com.example.trainogram.services;
 
 
-import com.example.trainogram.exception.Status430UserNotFoundException;
-import com.example.trainogram.exception.Status432UserCannotAddOneselfToFriend;
-import com.example.trainogram.exception.Status435FriendshipAlreadyExistException;
+import com.example.trainogram.exception.*;
 
 public interface FriendService {
     void addUserToFriends(Long id, String token) throws Status432UserCannotAddOneselfToFriend, Status435FriendshipAlreadyExistException, Status430UserNotFoundException;
 
-    void deleteUserFromFriends(Long id);
+    void deleteUserFromFriends(Long id, String token) throws Status430UserNotFoundException, Status427UserHasNotRootException, Status440UserCannotDeleteOneselfToFriend;
 }

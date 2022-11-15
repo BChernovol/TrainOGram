@@ -1,8 +1,6 @@
 package com.example.trainogram.conrtollers;
 
-import com.example.trainogram.exception.Status430UserNotFoundException;
-import com.example.trainogram.exception.Status432UserCannotAddOneselfToFriend;
-import com.example.trainogram.exception.Status435FriendshipAlreadyExistException;
+import com.example.trainogram.exception.*;
 import com.example.trainogram.services.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,8 +23,8 @@ public class    FriendshipController {
     }
 
     @DeleteMapping("/delete-friend/{id}")
-    public void deleteUserFromFriends(@PathVariable Long id){
-        friendService.deleteUserFromFriends(id);
+    public void deleteUserFromFriends(@PathVariable Long id, @RequestHeader("Authorization") String token) throws Status427UserHasNotRootException, Status430UserNotFoundException, Status440UserCannotDeleteOneselfToFriend {
+        friendService.deleteUserFromFriends(id, token);
     }
 
 }

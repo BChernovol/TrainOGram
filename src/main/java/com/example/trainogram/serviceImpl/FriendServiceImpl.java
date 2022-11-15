@@ -2,9 +2,7 @@ package com.example.trainogram.serviceImpl;
 
 import com.example.trainogram.entity.Friendship;
 import com.example.trainogram.entity.User;
-import com.example.trainogram.exception.Status430UserNotFoundException;
-import com.example.trainogram.exception.Status432UserCannotAddOneselfToFriend;
-import com.example.trainogram.exception.Status435FriendshipAlreadyExistException;
+import com.example.trainogram.exception.*;
 import com.example.trainogram.repositories.FriendshipRepository;
 import com.example.trainogram.services.FriendService;
 import com.example.trainogram.services.NotificationService;
@@ -52,8 +50,18 @@ public class FriendServiceImpl implements FriendService {
     }
     @Transactional
     @Override
-    public void deleteUserFromFriends(Long id) {
-        friendshipRepository.deleteFriendshipByFriendId(id);
+    public void deleteUserFromFriends(Long id, String token) throws Status430UserNotFoundException, Status427UserHasNotRootException, Status440UserCannotDeleteOneselfToFriend {
+        User userId  = userService.getAuthenticatedUser(token).get();
+        User userFriend = userService.findById(id);
+        if(userId.getId().equals(userFriend.getId())){
+            throw new Status440UserCannotDeleteOneselfToFriend("You can`t delete yourself with friends");
+        }
+        if(friendshipRepository.existsByFriendAndOwner(userId, userFriend)){
+            friendshipRepository.deleteFriendshipByFriendId(id);
+        }else {
+            throw new Status427UserHasNotRootException("User with id "+ userFriend.getId() +" not your friend");
+        }
+
     }
 
 
