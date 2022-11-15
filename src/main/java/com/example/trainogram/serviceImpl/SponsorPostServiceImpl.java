@@ -1,7 +1,6 @@
 package com.example.trainogram.serviceImpl;
 
 import com.example.trainogram.dto.PostDTO;
-import com.example.trainogram.entity.Post;
 import com.example.trainogram.entity.SponsorPost;
 import com.example.trainogram.exception.Status430UserNotFoundException;
 import com.example.trainogram.repositories.SponsorPostRepository;

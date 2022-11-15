@@ -2,7 +2,6 @@ package com.example.trainogram.serviceImpl;
 
 import com.example.trainogram.entity.Comment;
 import com.example.trainogram.entity.LikeComment;
-import com.example.trainogram.entity.LikePost;
 import com.example.trainogram.entity.SponsorPost;
 import com.example.trainogram.exception.Status420CommentPostIdNotFoundException;
 import com.example.trainogram.exception.Status427UserHasNotRootException;

@@ -1,6 +1,6 @@
 package com.example.trainogram.serviceImpl;
 
-import com.example.trainogram.entity.LikeComment;
+
 import com.example.trainogram.entity.LikePost;
 import com.example.trainogram.entity.Post;
 import com.example.trainogram.entity.SponsorPost;

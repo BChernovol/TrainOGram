@@ -1,13 +1,11 @@
 package com.example.trainogram.serviceImpl;
 
 import com.example.trainogram.config.Role;
-import com.example.trainogram.dto.AvatarDTO;
 import com.example.trainogram.entity.User;
 import com.example.trainogram.exception.Status430UserNotFoundException;
 import com.example.trainogram.repositories.UserRepository;
 import com.example.trainogram.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

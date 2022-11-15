@@ -58,7 +58,7 @@ public class CommentServiceImp implements CommentService {
     @Override
     public void deleteComment(Long commentId, String token) throws Status420CommentPostIdNotFoundException, Status427UserHasNotRootException {
 
-        Long userId = userService.getAuthenticatedUser(token).get().getId(); // TODO: 01.11.2022  Check owner user
+        Long userId = userService.getAuthenticatedUser(token).get().getId();
         Optional<Comment> comment  = commentRepository.findById(commentId);
 
             if(commentRepository.existsById(commentId)){
