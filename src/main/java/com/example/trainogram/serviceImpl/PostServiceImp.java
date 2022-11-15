@@ -51,7 +51,7 @@ public class PostServiceImp implements PostService {
         return  postRepository.findAllByUserUsername(username);
     }
 
-    public Optional<Post> findById(Long id) throws Status436PostNotFoundException {
+    public Optional<Post> findById(Long id) throws Status436PostNotFoundException { //TODO
         if(postRepository.findById(id).isEmpty()){
             throw new Status436PostNotFoundException("Post with id " + id + " not found");
         }
@@ -62,11 +62,18 @@ public class PostServiceImp implements PostService {
 
     @Transactional
     @Override
-    public void deletePost(Long postId) throws Status436PostNotFoundException {
-        if(postRepository.findById(postId).isEmpty()){
+    public void deletePost(Long postId, String token) throws Status436PostNotFoundException, Status427UserHasNotRootException {
+        Long userId = userService.getAuthenticatedUser(token).get().getId();
+        Post post = postRepository.findById(postId).orElseThrow(() -> new Status436PostNotFoundException("Post not found"));
+        if(post == null){
             throw new Status436PostNotFoundException("Post with id " + postId + " not found");
         }
-        postRepository.deleteById(postId);
+        if(isPostRelatedToUser(userId, post)){
+            postRepository.deleteById(postId);
+        }else {
+            throw new Status427UserHasNotRootException("User is not the owner of the postUser");
+        }
+
     }
 
 

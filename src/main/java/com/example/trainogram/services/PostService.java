@@ -16,7 +16,7 @@ public interface PostService {
 
     List <Post> getByUsername(String token) throws Status436PostNotFoundException;
 
-    void deletePost(Long id) throws Status436PostNotFoundException;
+    void deletePost(Long id, String token) throws Status436PostNotFoundException, Status427UserHasNotRootException;
 
     Post createPost(PostDTO postDTO, String token) throws IOException;
 

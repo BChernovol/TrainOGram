@@ -8,6 +8,8 @@ import com.example.trainogram.services.LikePostService;
 import com.example.trainogram.services.PostService;
 import com.example.trainogram.services.SponsorPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -41,6 +43,11 @@ public class PostController {
     public SponsorPost createSponsorPost(@ModelAttribute PostDTO postDTO,@PathVariable Long sponsorId, @RequestHeader("Authorization") String token) throws Status430UserNotFoundException, IOException {
         return sponsorPostService.createSponsorPost(postDTO,sponsorId,token);
     }
+    @DeleteMapping("/delete/sponsor-post/{sponsorPostId}")
+    public ResponseEntity<?> deleteSponsorPost(@PathVariable Long sponsorPostId, @RequestHeader("Authorization") String token) throws Status427UserHasNotRootException, Status436PostNotFoundException {
+         sponsorPostService.deleteSponsorPost(sponsorPostId, token);
+         return ResponseEntity.ok(HttpStatus.OK);
+    }
 
     @GetMapping("/get")
     public List<Post> getPostByUsername(@RequestHeader("Authorization") String token) throws Status436PostNotFoundException {
@@ -58,8 +65,8 @@ public class PostController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deletePost(@PathVariable Long id) throws Status436PostNotFoundException {
-        postService.deletePost(id);
+    public void deletePost(@PathVariable Long id, @RequestHeader("Authorization") String token) throws Status436PostNotFoundException, Status427UserHasNotRootException {
+        postService.deletePost(id, token);
     }
 
     @PostMapping("/update/{id}")

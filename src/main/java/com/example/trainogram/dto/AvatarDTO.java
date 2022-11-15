@@ -9,6 +9,5 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class AvatarDTO {
-
     private List<MultipartFile> multipartFile;
 }
