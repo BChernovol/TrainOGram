@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LikeAvatarRepository extends JpaRepository<LikeAvatar,Long> {
-    boolean existsByUser_IdAndAvatar_Id(Long likeId, Long userId);
+    
+    boolean existsLikeAvatarsByUserId(Long likeId, Long userId);
 
+    void delete(Long avatarId);
 }

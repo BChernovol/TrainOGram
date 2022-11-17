@@ -1,9 +1,12 @@
 package com.example.trainogram.serviceImpl;
 
+import com.example.trainogram.entity.Avatar;
 import com.example.trainogram.entity.LikeAvatar;
 import com.example.trainogram.entity.User;
+import com.example.trainogram.exception.Status427UserHasNotRootException;
 import com.example.trainogram.exception.Status433LikeAlreadyExistsException;
 import com.example.trainogram.exception.Status438AvatarNotFoundException;
+import com.example.trainogram.repositories.AvatarRepository;
 import com.example.trainogram.repositories.LikeAvatarRepository;
 import com.example.trainogram.services.AvatarPictureService;
 import com.example.trainogram.services.LikeAvatarService;
@@ -15,12 +18,13 @@ public class LikeAvatarServiceImpl implements LikeAvatarService {
 
     private final LikeAvatarRepository likeAvatarRepository;
     private final UserService userService;
-
+    private final AvatarRepository avatarRepository;
     private final AvatarPictureService avatarPictureService;
 
-    public LikeAvatarServiceImpl(LikeAvatarRepository likeAvatarRepository, UserService userService, AvatarPictureService avatarPictureService1) {
+    public LikeAvatarServiceImpl(LikeAvatarRepository likeAvatarRepository, UserService userService, AvatarRepository avatarRepository, AvatarPictureService avatarPictureService1) {
         this.likeAvatarRepository = likeAvatarRepository;
         this.userService = userService;
+        this.avatarRepository = avatarRepository;
         this.avatarPictureService = avatarPictureService1;
     }
 
@@ -38,7 +42,19 @@ public class LikeAvatarServiceImpl implements LikeAvatarService {
     }
 
     @Override
+    public void deleteLike(Long avatarId, String token) throws Status438AvatarNotFoundException, Status427UserHasNotRootException {
+        Long userId = userService.getAuthenticatedUser(token).get().getId();//TODO
+        Avatar avatar = avatarRepository.findById(avatarId).orElseThrow(() -> new Status438AvatarNotFoundException("Avatar not found"));
+        if(userId.equals(avatar.getUser().getId())){
+            likeAvatarRepository.delete(avatarId);
+        }else {
+            throw new Status427UserHasNotRootException("User has not root");
+        }
+
+    }
+
+    @Override
     public boolean existsLikeAvatarsByUserId(Long likeId, Long userId) {
-        return likeAvatarRepository.existsByUser_IdAndAvatar_Id(likeId,userId);
+        return likeAvatarRepository.existsLikeAvatarsByUserId(likeId,userId);
     }
 }
