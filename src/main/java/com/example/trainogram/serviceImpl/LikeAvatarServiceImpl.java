@@ -30,7 +30,7 @@ public class LikeAvatarServiceImpl implements LikeAvatarService {
 
     public void setLike(Long avatarId, String token) throws Status433LikeAlreadyExistsException, Status438AvatarNotFoundException {
         User user = userService.getAuthenticatedUser(token).get();
-        if(!existsLikeAvatarsByUserId(user.getId(),avatarId)){
+        if(!existsLikeAvatarsByUserId(avatarId, user.getId())){
             likeAvatarRepository.save(LikeAvatar.builder()
                     .avatar(avatarPictureService.findAvatarById(avatarId).orElseThrow(() -> new Status438AvatarNotFoundException("Avatar with id "+ avatarId + "not found")))
                     .user(user)
@@ -46,7 +46,7 @@ public class LikeAvatarServiceImpl implements LikeAvatarService {
         Long userId = userService.getAuthenticatedUser(token).get().getId();//TODO
         Avatar avatar = avatarRepository.findById(avatarId).orElseThrow(() -> new Status438AvatarNotFoundException("Avatar not found"));
         if(userId.equals(avatar.getUser().getId())){
-            likeAvatarRepository.delete(avatarId);
+            likeAvatarRepository.deleteByAvatarId(avatarId);
         }else {
             throw new Status427UserHasNotRootException("User has not root");
         }
@@ -55,6 +55,6 @@ public class LikeAvatarServiceImpl implements LikeAvatarService {
 
     @Override
     public boolean existsLikeAvatarsByUserId(Long likeId, Long userId) {
-        return likeAvatarRepository.existsLikeAvatarsByUserId(likeId,userId);
+        return likeAvatarRepository.existsLikeAvatarsByUserId(userId);
     }
 }

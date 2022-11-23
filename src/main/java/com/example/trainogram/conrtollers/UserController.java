@@ -26,8 +26,7 @@ public class UserController {
     private final UserServiceImpl userService;
     private final ModelMapper modelMapper;
     private final  AvatarPictureService avatarPictureService;
-
-   private final LikeAvatarService likeAvatarService;
+    private final LikeAvatarService likeAvatarService;
 
     @Autowired
     public UserController(UserServiceImpl userService, ModelMapper modelMapper, AvatarPictureService avatarPictureService, LikeAvatarService likeAvatarService) {
