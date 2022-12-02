@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -28,5 +29,4 @@ public class Avatar {
     @JsonIgnore
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
-
 }
