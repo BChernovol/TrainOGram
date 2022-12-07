@@ -1,4 +1,4 @@
-package com.example.trainogram.websocket;
+package com.example.trainogram.entity;
 
 
 import lombok.AllArgsConstructor;

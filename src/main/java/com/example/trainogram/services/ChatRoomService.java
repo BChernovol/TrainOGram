@@ -9,4 +9,6 @@ import java.util.Set;
 public interface ChatRoomService {
 
     ChatRoom createChatRoom(Set<Long> recipients, String token) throws Status430UserNotFoundException;
+
+    ChatRoom findChatRoomById(Long id);
 }

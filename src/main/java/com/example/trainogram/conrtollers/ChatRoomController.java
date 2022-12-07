@@ -21,6 +21,7 @@ public class ChatRoomController {
         this.chatRoomService = chatRoomService;
     }
 
+
     @PostMapping("/create-chat")
     public ResponseEntity<?> createChat(@RequestParam Set<Long> participants, @RequestHeader("Authorization") String token) throws Status430UserNotFoundException {
         chatRoomService.createChatRoom(participants, token);
