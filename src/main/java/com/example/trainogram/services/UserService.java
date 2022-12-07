@@ -17,6 +17,7 @@ public interface UserService {
      Optional<User> getAuthenticatedUser(String token);
 
      User findById(Long id) throws Status430UserNotFoundException;
+     Optional<User> findByUsername(String username);
 
 
 }

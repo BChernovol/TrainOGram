@@ -1,10 +1,9 @@
 package com.example.trainogram.websocket;
 
-
-
 import com.example.trainogram.entity.User;
-import com.example.trainogram.repositories.ChatRoomRepository;
+import com.example.trainogram.services.ChatMessageService;
 import com.example.trainogram.services.ChatRoomService;
+import com.example.trainogram.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.websocket.*;
@@ -23,13 +22,19 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class ChatEndpoint {
 
     private Session session;
+
     private static  Set<ChatEndpoint> chatEndpoints = new CopyOnWriteArraySet<>();
     private static  HashMap<String, String> users = new HashMap<>();
 
     private final ChatRoomService chatRoomService;
+    private final ChatMessageService chatMessageService;
+
+    private final UserService userService;
     @Autowired
     public ChatEndpoint() {
         this.chatRoomService = SpringContext.getApplicationContext().getBean(ChatRoomService.class);
+        this.chatMessageService = SpringContext.getApplicationContext().getBean(ChatMessageService.class);
+        this.userService = SpringContext.getApplicationContext().getBean(UserService.class);
     }
 
     @OnOpen
@@ -43,7 +48,11 @@ public class ChatEndpoint {
         Message message = new Message();
         message.setFrom(users.get(session.getId()));
 
+        String adminUsername = session.getUserPrincipal().getName();
+        Optional<User> adminId = userService.findByUsername(adminUsername);
         ChatRoom chatRoom = chatRoomService.findChatRoomById(chatRoomId);
+
+        chatMessageService.saveMessage(incomingMessage,adminId.get().getId(),chatRoom.getId());
         for (User participant : chatRoom.getParticipants()) {
             message.setTo(participant.getName());
             message.setContent(incomingMessage);
