@@ -11,7 +11,6 @@ import com.example.trainogram.repositories.PostRepository;
 import com.example.trainogram.services.CommentService;
 import com.example.trainogram.services.NotificationService;
 import com.example.trainogram.services.UserService;
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

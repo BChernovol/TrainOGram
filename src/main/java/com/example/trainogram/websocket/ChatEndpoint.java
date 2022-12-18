@@ -17,19 +17,18 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 
 @ServerEndpoint(value = "/chat/{chatRoomId}",
-               decoders = MessageDecoder.class,
-               encoders = MessageEncoder.class)
+        decoders = MessageDecoder.class,
+        encoders = MessageEncoder.class)
 public class ChatEndpoint {
-
     private Session session;
-
-    private static  Set<ChatEndpoint> chatEndpoints = new CopyOnWriteArraySet<>();
-    private static  HashMap<String, String> users = new HashMap<>();
+    private static Set<ChatEndpoint> chatEndpoints = new CopyOnWriteArraySet<>();
+    private static HashMap<String, String> users = new HashMap<>();
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
 
     private final UserService userService;
+
     @Autowired
     public ChatEndpoint() {
         this.chatRoomService = SpringContext.getApplicationContext().getBean(ChatRoomService.class);
@@ -52,12 +51,17 @@ public class ChatEndpoint {
         Optional<User> adminId = userService.findByUsername(adminUsername);
         ChatRoom chatRoom = chatRoomService.findChatRoomById(chatRoomId);
 
-        chatMessageService.saveMessage(incomingMessage,adminId.get().getId(),chatRoom.getId());
-        for (User participant : chatRoom.getParticipants()) {
-            message.setTo(participant.getName());
-            message.setContent(incomingMessage);
-            broadcast(message);
+        if (adminId.get().getId().equals(chatRoom.getAdminId())) {
+            chatMessageService.saveMessage(incomingMessage, adminId.get().getId(), chatRoom.getId());
+            for (User participant : chatRoom.getParticipants()) {
+                message.setTo(participant.getName());
+                message.setContent(incomingMessage);
+                broadcast(message);
+            }
+        } else {
+            throw new RuntimeException("Error");
         }
+
     }
 
     @OnClose
@@ -70,10 +74,12 @@ public class ChatEndpoint {
         broadcast(message);
 
     }
+
     @OnError
-    public void onError(Session session,Throwable throwable){ //Do error handing here
+    public void onError(Session session, Throwable throwable) { //Do error handing here
         System.out.println(throwable.getMessage());
-          }
+    }
+
     private static void broadcast(Message message)
             throws IOException, EncodeException {
 
